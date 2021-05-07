@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 
-OSX_VERSION="$(sw_vers -productVersion | sed -E "s/^[0-9]+\.([0-9]+)/\\1/")"
+function get_version() {
+    sw_vers -productVersion | awk 'BEGIN { FS = "." } ;{ printf "%s.%s", $1, $2 }'
+}
+OSX_VERSION="$(get_version)"
 
 # Install Karabiner if it isn't installed, but homebrew and cask are.
 if [[ "$(type -P brew)" && "$(brew tap | awk '/cask/')" ]]; then
   if [[ ! "$(brew list --casks 2>/dev/null | grep karabiner)" ]]; then
     echo "Installing Karabiner..."
-	if [[ $OSX_VERSION -ge 12 ]]; then
+	if (( $(echo "$OSX_VERSION > 10.12" | bc -l) )); then
 	  brew install --cask karabiner-elements
 	else
 	  brew install --cask karabiner
@@ -25,7 +28,7 @@ fi
 
 # Copy Karabiner settings.
 echo "Copying Karabiner settings..."
-if [[ $OSX_VERSION -ge 12 ]]; then
+if (( $(echo "$OSX_VERSION > 10.12" | bc -l) )); then
   mkdir -p ~/.config/karabiner
   cp karabiner.json ~/.config/karabiner/karabiner.json
 else
