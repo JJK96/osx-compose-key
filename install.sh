@@ -4,12 +4,12 @@ OSX_VERSION="$(sw_vers -productVersion | sed -E "s/^[0-9]+\.([0-9]+)/\\1/")"
 
 # Install Karabiner if it isn't installed, but homebrew and cask are.
 if [[ "$(type -P brew)" && "$(brew tap | awk '/cask/')" ]]; then
-  if [[ ! "$(brew cask list 2>/dev/null | grep karabiner)" ]]; then
+  if [[ ! "$(brew list --casks 2>/dev/null | grep karabiner)" ]]; then
     echo "Installing Karabiner..."
 	if [[ $OSX_VERSION -ge 12 ]]; then
-	  brew cask install karabiner-elements
+	  brew install --cask karabiner-elements
 	else
-	  brew cask install karabiner
+	  brew install --cask karabiner
 	fi
   fi
   echo "Karabiner installed."
